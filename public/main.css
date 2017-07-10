@@ -25,3 +25,8 @@ td {
 .value {
     text-align: right;
 }
+
+code {
+    background-color: #ffe6e6;
+    color: #cc0000;
+}
