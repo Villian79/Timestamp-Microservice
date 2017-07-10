@@ -1,0 +1,27 @@
+body {
+    background: #e6f7ff;
+}
+
+table {
+    margin: 200px auto;
+    width: 40%;
+    border-spacing: 5px;
+    background-color: #66ccff;
+    color: #0077b3;
+    font-size: 2em;
+    border-radius: 10px;
+    box-shadow: 5px 5px 5px #888888;
+}
+
+td {
+    height: 1.3em;
+    padding: 5px;
+}
+
+.name {
+    text-align: right;
+}
+
+.value {
+    text-align: right;
+}
