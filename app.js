@@ -1,42 +1,44 @@
-var express = require('express');
-var app = express();
-var moment = require('moment');
+const express   = require('express');
+const app       = express();
+const moment    = require('moment');
+moment().format();
 
 
 app.set('view engine', 'ejs');
 app.use(express.static("public"));
 
 app.get('/', function(req, res){
-    res.render('query');
+    res.render('index.ejs');
 });
 
-app.get('/:userdate', function(req, res){
+app.get('/api/timestamp/', (req, res) => {
+  let date = new Date();
+  let unixdate = Number(moment(date).format('X'));
+  res.json({"unix": date.getTime(), "date": date.toUTCString()});
+});
+
+app.get('/api/timestamp/:date_string', function(req, res){
     
-    var userinput = req.params.userdate;
-    var userdate = Number(userinput);
-    //Checking if the user's input is a positive number. If it is, we assume it to be a unix number and convert it to a normal date.
-    if (isNaN(userdate) === false && userdate >= 0){
-        var unixdate = userdate;
-        var date = moment(unixdate).format('MMMM DD, YYYY');
-    }
-    else if(isNaN(userdate) === true){
-        date = moment(userinput, ['DDMMMMY', 'MMMMDDY', 'YDDMMMM', 'YMMMMDD', 'DDYMMMM', 'MMMMYDD']).format('MMMM DD, YYYY');
-        if(date === 'Invalid date'){
-            date = 'Null';
-            unixdate = 'Null';
-        }
-        else{
-        unixdate = Number(moment(date).format('X'));
-        }
-    }
-    var json = 
-        {
-            'unix': unixdate,
-            'normal': date
-        };
+    let userinput = req.params.date_string;
+    let unix, date;
+    //let userdate = Number(userinput);
     
-    res.render('timestamp', {unixdate: json.unix, date: json.normal});
-        
+    if(Date.parse(userinput)){
+      date = new Date(userinput);
+      res.json({"unix": Date.parse(date), "date": date.toUTCString()});
+    }
+     else{
+       unix = +userinput;
+       if(moment(unix).isValid()){
+         let day = moment(unix).format();
+        date = new Date(day);
+        res.json({"unix": unix, "date": date.toUTCString()});
+       }
+       else{
+         res.json({"error" : "Invalid Date" });
+       }
+     }
+       
 });
 
 app.listen(process.env.PORT, process.env.IP, function(err){
